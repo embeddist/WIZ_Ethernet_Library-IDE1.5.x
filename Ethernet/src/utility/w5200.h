@@ -10,6 +10,8 @@
 #ifndef	W5200_H_INCLUDED
 #define	W5200_H_INCLUDED
 
+#include "utility/w5100.h"
+
 //#include <avr/pgmspace.h>
 //#include <SPI.h>
 
