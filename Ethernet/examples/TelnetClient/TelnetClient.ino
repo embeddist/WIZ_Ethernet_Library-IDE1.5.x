@@ -31,6 +31,8 @@
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 #endif
 
+//#define __USE_DHCP__
+
 IPAddress ip(192, 168, 1, 177);
 IPAddress gateway(192,168,1, 1);
 IPAddress subnet(255, 255, 255, 0); 
@@ -48,11 +50,19 @@ EthernetClient client;
 
 void setup() {
   // start the Ethernet connection:
+#if defined __USE_DHCP__
+#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+  Ethernet.begin();
+#else
+  Ethernet.begin(mac);
+#endif  
+#else
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
   Ethernet.begin(ip, myDns, gateway, subnet);
 #else
   Ethernet.begin(mac, ip, myDns, gateway, subnet);
 #endif  
+#endif 
     
   // Open serial communications and wait for port to open:
   Serial.begin(9600);

@@ -27,6 +27,9 @@
 #else
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 #endif
+
+//#define __USE_DHCP__
+
 IPAddress ip(192, 168, 1, 177);
 IPAddress gateway(192,168,1, 1);
 IPAddress subnet(255, 255, 255, 0); 
@@ -43,12 +46,23 @@ char  ReplyBuffer[] = "acknowledged";       // a string to send back
 EthernetUDP Udp;
 
 void setup() {
-  // start the Ethernet and UDP:
+
+  // initialize the ethernet device
+#if defined __USE_DHCP__
+#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+  Ethernet.begin();
+#else
+  Ethernet.begin(mac);
+#endif  
+#else
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
   Ethernet.begin(ip, myDns, gateway, subnet);
 #else
   Ethernet.begin(mac, ip, myDns, gateway, subnet);
 #endif  
+#endif 
+  
+  // start the Ethernet and UDP:
   Udp.begin(localPort);
 
   Serial.begin(9600);

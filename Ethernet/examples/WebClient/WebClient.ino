@@ -26,6 +26,9 @@
 #else
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 #endif
+
+//#define __USE_DHCP__
+
 // if you don't want to use DNS (and reduce your sketch size)
 // use the numeric IP instead of the name for the server:
 //IPAddress server(74,125,232,128);  // numeric IP for Google (no DNS)
@@ -50,21 +53,21 @@ void setup() {
     ; // wait for serial port to connect. Needed for Leonardo only
   }
 
-  // start the Ethernet connection:
+  // initialize the ethernet device
+#if defined __USE_DHCP__
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
-  if (Ethernet.begin() == 0) {
+  Ethernet.begin();
 #else
-  if (Ethernet.begin(mac) == 0) {
+  Ethernet.begin(mac);
 #endif  
-    Serial.println("Failed to configure Ethernet using DHCP");
-    // no point in carrying on, so do nothing forevermore:
-    // try to congifure using IP address instead of DHCP:
+#else
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
-    Ethernet.begin(ip, myDns, gateway, subnet);
+  Ethernet.begin(ip, myDns, gateway, subnet);
 #else
-    Ethernet.begin(mac, ip, myDns, gateway, subnet);
+  Ethernet.begin(mac, ip, myDns, gateway, subnet);
 #endif  
-  }
+#endif 
+
   // give the Ethernet shield a second to initialize:
   delay(1000);
   Serial.println("connecting...");

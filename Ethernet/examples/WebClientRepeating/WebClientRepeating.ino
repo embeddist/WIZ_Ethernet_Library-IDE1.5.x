@@ -36,6 +36,9 @@ void httpRequest();
 #else
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 #endif
+
+//#DEFINE __USE_DHCP__
+
 // fill in an available IP address on your network here,
 // for manual configuration:
 IPAddress ip(192,168,1, 177);
@@ -63,12 +66,22 @@ void setup() {
 
   // give the ethernet module time to boot up:
   delay(1000);
-  // start the Ethernet connection using a fixed IP address and DNS server:
+
+  // initialize the ethernet device
+#if defined __USE_DHCP__
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
-  Ethernet.begin(ip, myDns); 
+  Ethernet.begin();
 #else
-  Ethernet.begin(mac, ip, myDns);
+  Ethernet.begin(mac);
 #endif  
+#else
+#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+  Ethernet.begin(ip, myDns, gateway, subnet);
+#else
+  Ethernet.begin(mac, ip, myDns, gateway, subnet);
+#endif  
+#endif 
+
   // print the Ethernet board/shield's IP address:
   Serial.print("My IP address: ");
   Serial.println(Ethernet.localIP());

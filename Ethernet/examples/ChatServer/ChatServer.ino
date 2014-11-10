@@ -23,13 +23,19 @@
 // Enter a MAC address and IP address for your controller below.
 // The IP address will be dependent on your local network.
 // gateway and subnet are optional:
-byte mac[] = {
-  0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED
-};
+#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+;
+#else
+byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
+#endif
+
+//#define __USE_DHCP__
+
 IPAddress ip(192, 168, 1, 177);
 IPAddress gateway(192, 168, 1, 1);
 IPAddress subnet(255, 255, 0, 0);
-IPAddress dns_srv(8, 8, 8, 8);
+// fill in your Domain Name Server address here:
+IPAddress myDns(8, 8, 8, 8); // google puble dns
 
 
 // telnet defaults to port 23
@@ -38,7 +44,20 @@ boolean alreadyConnected = false; // whether or not the client was connected pre
 
 void setup() {
   // initialize the ethernet device
-  Ethernet.begin(mac, ip, dns_srv, gateway);
+#if defined __USE_DHCP__
+#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+  Ethernet.begin();
+#else
+  Ethernet.begin(mac);
+#endif  
+#else
+#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+  Ethernet.begin(ip, myDns, gateway, subnet);
+#else
+  Ethernet.begin(mac, ip, myDns, gateway, subnet);
+#endif  
+#endif 
+
   // start listening for clients
   server.begin();
   // Open serial communications and wait for port to open:

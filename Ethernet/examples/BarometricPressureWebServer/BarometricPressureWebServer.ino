@@ -32,6 +32,8 @@ void listenForEthernetClients();
 void writeRegister(byte registerName, byte registerValue); 
 unsigned int readRegister(byte registerName, int numBytes);
 
+//#define __USE_DHCP__
+
 // assign a MAC address for the ethernet controller.
 // fill in your address here:
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
@@ -70,12 +72,21 @@ void setup() {
   // start the SPI library:
   SPI.begin();
 
-  // start the Ethernet connection and the server:
+  // initialize the ethernet device
+#if defined __USE_DHCP__
+#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+  Ethernet.begin();
+#else
+  Ethernet.begin(mac);
+#endif  
+#else
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
   Ethernet.begin(ip, myDns, gateway, subnet);
 #else
   Ethernet.begin(mac, ip, myDns, gateway, subnet);
 #endif  
+#endif
+  // start the Ethernet connection and the server:
   server.begin();
 
   // initalize the  data ready and chip select pins:
