@@ -8,7 +8,7 @@ The Ethernet library lets you connect to the Internet or a local network.
 * Ethernet Shield (used in W5100)
 
 ## Hardware
-* ioShield  
+* [ioShield](http://wizwiki.net/wiki/doku.php?id=osh:ioshield-a:start "ioShield-A")
 * [W5200 Ethernet Shield](https://github.com/Wiznet/W5200-Ethernet-Shield "W5200 Ethernet Shield")  
 * [Ethernet Shield](http://arduino.cc/en/Main/ArduinoEthernetShield "Ethernet Shield")  
 
@@ -32,6 +32,20 @@ typedef uint8_t SOCKET;
 //#define W5200_ETHERNET_SHIELD
 #define W5500_ETHERNET_SHIELD
 ```
+
+#### WIZ550io (if you use, ioShield-A/K/L)
+* WIZ550io has a unique real MAC address.
+* [WIZ550io](http://wizwiki.net/wiki/doku.php?id=products:wiz550io:start "WIZ550io")
+* It configures the network setting which has included MAC address automatically.
+* Uncomment WIZ550io with MACADDRESS to user unique real MAC address. 
+```cpp
+//Arduino\libraries\Ethernet\utility\w5100.h
+#if defined(W5500_ETHERNET_SHIELD)
+#define WIZ550io_WITH_MACADDRESS // Use assigned MAC address of WIZ550io
+#include "utility/w5500.h"
+#endif
+```
+
 ## Using the WIZ Ethernet library and evaluate existing Ethernet example.
 All other steps are the same as the steps from the Arduino Ethernet Shield. 
 You can use examples in ./Ethernet/examples folder for the Arduino IDE 1.5.7, go to Files->Examples->Ethernet, open any example, then copy it to your sketch file and change configuration values properly.
