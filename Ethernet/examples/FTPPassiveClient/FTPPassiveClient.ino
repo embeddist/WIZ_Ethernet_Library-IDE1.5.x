@@ -23,6 +23,8 @@
 byte mac[] = {0xDE, 0xAD, 0xBE, 0xEF, 0xFE, 0xED};
 #endif  
 
+//#define __USE_DHCP__
+
 // change to your network settings
 IPAddress ip( 192, 168, 1, 177 );    
 IPAddress gateway( 192, 168, 1, 1 );
@@ -42,6 +44,11 @@ char outCount;
 // change fileName to your file (8.3 format!)
 char fileName[13] = "test.txt";
 
+byte eRcv();
+byte doFTP();
+void readSD();
+void efail();
+
 void setup()
 {
   Serial.begin(9600);
@@ -50,11 +57,20 @@ void setup()
     - step1. Ethernet.begin : After Ethernet.begin(), CS (D10) is low.
     - step2. SD.begin
   */
+#if defined __USE_DHCP__
+#if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
+  Ethernet.begin();
+#else
+  Ethernet.begin(mac);
+#endif  
+#else
 #if defined(WIZ550io_WITH_MACADDRESS) // Use assigned MAC address of WIZ550io
   Ethernet.begin(ip, myDns, gateway, subnet);
 #else
   Ethernet.begin(mac, ip, myDns, gateway, subnet);
 #endif  
+#endif 
+
   delay(2000);
   Serial.print("Initializing SD card...");
   if(SD.begin(4) == 0)
