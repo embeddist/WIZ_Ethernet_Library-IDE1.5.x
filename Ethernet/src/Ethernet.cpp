@@ -66,9 +66,9 @@ void EthernetClass::begin(IPAddress local_ip, IPAddress dns_server, IPAddress ga
 void EthernetClass::begin(IPAddress local_ip, IPAddress dns_server, IPAddress gateway, IPAddress subnet)
 {
   W5100.init();
-  W5100.setIPAddress(local_ip.raw_address);
-  W5100.setGatewayIp(gateway.raw_address);
-  W5100.setSubnetMask(subnet.raw_address);
+  W5100.setIPAddress(local_ip.raw_address());
+  W5100.setGatewayIp(gateway.raw_address());
+  W5100.setSubnetMask(subnet.raw_address());
   _dnsServerAddress = dns_server;
 }
 #else
